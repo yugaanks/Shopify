@@ -109,3 +109,36 @@ input[type=text]:focus {
     background-color: #efefef;
     text-align: center;
 }
+
+.reward-pts input[type="checkbox"] {
+    display: none;
+}
+
+.reward-pts input[type="checkbox"] + .btn-group > label span {
+    width: 20px;
+}
+
+.reward-pts input[type="checkbox"] + .btn-group > label span:first-child {
+    display: none;
+}
+.reward-pts input[type="checkbox"] + .btn-group > label span:last-child {
+    display: inline-block;   
+}
+
+.reward-pts input[type="checkbox"]:checked + .btn-group > label span:first-child {
+    display: inline-block;
+}
+.reward-pts input[type="checkbox"]:checked + .btn-group > label span:last-child {
+    display: none;   
+}
+
+.cart-button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+    width: 20px;
+    text-align: center;
+}
