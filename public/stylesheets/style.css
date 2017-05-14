@@ -1,17 +1,18 @@
 body {
     background-image: url("http://netdna.webdesignerdepot.com/uploads/2013/07/featured23@wdd2x.jpg");
 }
-.thumbnail img{
-    max-height:150px;
+
+.thumbnail img {
+    max-height: 150px;
 }
 
 .thumbnail .description {
-    color:#008a00;
+    color: #008a00;
 }
 
 .price {
-    font-weight:bold;
-    font-size:16px;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 ul.tab {
@@ -43,8 +44,8 @@ ul.tab li a:hover {
     background-color: #f8f8f8;
 }
 
-ul.tab li a:focus, .active {
-    
+ul.tab li a:focus,
+.active {
     background-color: #ccc;
 }
 
@@ -65,14 +66,18 @@ input[type=text]:focus {
     width: 100%;
 }
 
-
 .imgholder {
-     width:304px;
-    height:228px;
+    width: 304px;
+    height: 228px;
 }
 
 .amt {
-    text-align: right;
+    text-align: center;
+    font-size: large
+}
+
+.price {
+    font-size: large
 }
 
 .footer {
