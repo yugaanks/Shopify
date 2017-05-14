@@ -6,8 +6,21 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
       <link rel='stylesheet' href='/stylesheets/style.css' />
       <script type="text/javascript" src="js/tota11y.min.js"></script>
+
+      <script>
+        function changeTotalAmount() {
+
+            var total = {{totalPrice}};
+            var rewards = {{rewardPoints}};
+
+            total = total - rewards;
+            
+            document.getElementById("totalAmt").innerHTML = "Total Amount: $" + total;
+        }
+</script>
+
 </head>
-<body class="main">
+<body class="main" onload="Init ()">
 {{# if products}}
     <div class="row">
         <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
@@ -20,26 +33,47 @@
                             <strong>{{this.item.title}}</strong>
                             <img src={{this.item.imagePath}} alt="goodsImage" class="img-responsive"height="100px"width="100px">  
                         </div>
-                        <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown">Action<span class="caret"></span></button>
+                        {{!--<button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown">Action<span class="caret"></span></button>
                         <ul class="dropdown-menu">
                                 <li><a href="/reduce/{{this.item._id}}">Reduce by 1</a></li>
                                 <li><a href="/remove/{{this.item._id}}">Reduce All</a></li>
                                 <li><a href="/add/{{this.item._id}}"> Add by 1</a></li>
-                        </ul>
-                        &nbsp<button class="add" type="button" name="add" onclick="">+</button>
-                        &nbsp<button class="remove" type="button" name="remove" onclick="">-</button>
+                        </ul>--}}
                         <span class="price">${{this.price}}</span>
-                        &nbsp <button class="cancel" type="button" name="cancel" onclick="">Cancel</button>
+                        {{!--&nbsp<button class="add" type="button" name="add" onclick="">+</button>--}}
+                        &nbsp<a href="/add/{{this.item._id}}" class="cart-button">+</a>
+                        &nbsp<a href="/reduce/{{this.item._id}}" class="cart-button">-</a>
+                        &nbsp<a href="/remove/{{this.item._id}}" class="cart-button">x</a>
                     </li>
                     </ul>
                 {{/each}}
-            
+                
+                {{# if rewardPoints}}
+                    <div class="row"align="center">
+                            <button onclick="changeTotalAmount()">You have {{rewardPoints}} reward points available! <br> Do you want to use it?</button>
+
+                            {{!--<div class="[ reward-pts ]">
+                                <input type="checkbox" name="fancy-checkbox-success" id="fancy-checkbox-success" autocomplete="off" 
+                                    onchange="changeFinalAmount(this)" />
+                                <div class="[ btn-group ]">
+                                    <label for="fancy-checkbox-success" class="[ btn btn-success ]">
+                                        <span class="[ glyphicon glyphicon-ok ]"></span>
+                                        <span> </span>
+                                    </label>
+                                    <label for="fancy-checkbox-success" class="[ btn btn-default active ]">
+                                        You have {{rewardPoints}} available! Do you want to use it?
+                                    </label>
+                                </div>
+                            </div>--}}
+                    </div>
+                    <br>
+                {{/if}}
         </div>
     </div>
 
     <div class="row"align="center">
         <div class="amt"align="center">
-            <strong>Total Amount: ${{totalPrice}}</strong>
+            <strong id="totalAmt">Total Amount: ${{totalPrice}}</strong>
         </div>
     </div>
 

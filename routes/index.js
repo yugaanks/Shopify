@@ -3,11 +3,13 @@ var router = express.Router();
 var csrf = require('csurf');
 var passport = require("passport");
 var Cart = require("../models/cart");
-var Receipt = require("../models/receipt");
+
 var multer = require("multer");
 var upload = multer({ dest: "./public/uploads" });
 
 var Product = require("../models/product");
+var Receipt = require("../models/receipt");
+var RewardPoints = require("../models/rewardPoints");
 var mongoose = require("mongoose");
 
 /* GET home page. */
@@ -53,6 +55,91 @@ router.post("/upload", upload.single("avatar"), function(req, res) {
         if (err) return console.error(err);
     });
     res.redirect("/");
+});
+
+router.post("/checkout", function(req, res) {
+
+    console.log("in");
+
+    var cart = new Cart(req.session.cart ? req.session.cart : {});
+    var cartData = [];
+    cartData = cart.generateArray();
+
+    var cartProdId = [];
+
+    for (i = 0; i < cartData.length; i++) 
+    {
+        console.log(cartData[i].item._id);
+        cartProdId[i] = cartData[i].item._id;
+    }
+
+    console.log("yo2");
+    if (!req.user) {
+        console.log("yo1");
+        var receipt = new Receipt({
+            productId: cartProdId,
+            date: new Date()
+        });
+    } 
+    else 
+    {
+        console.log("yo");
+        var receipt = new Receipt({
+            userId: req.user._id,
+            productId: cartProdId,
+            date: new Date()
+        });
+    }
+
+    receipt.save(function(err, result) {
+        if (err) 
+            return console.error(err);
+
+        if(req.user)
+        {
+            currentPoints = 0;
+
+            RewardPoints.findOne({userId:JSON.stringify(req.user._id)}, function(err, obj){
+                
+                if(obj)
+                {
+                    currentPoints = obj.points;
+                    console.log(currentPoints + obj.userId + " " + obj._id);
+
+                    try {
+                         RewardPoints.deleteOne(
+                            { "_id" : obj._id }
+                            // { w : "majority", wtimeout : 100 }
+                        );
+                    } catch (e) 
+                    {
+                        console.log(e);
+                    }
+
+                    // RewardPoints.updateOne(
+                    //     {_id: obj._id},
+                    //     // {'userId': `'` + obj.userId + `'`},
+                    //     {$set:{'points': updPoints}}
+                    // );
+                }
+
+                var points = new RewardPoints({
+                    userId: JSON.stringify(req.user._id),
+                    points: currentPoints + cart.totalPrice/10
+                });
+
+                points.save(function(err, result) {
+                    if (err) 
+                        return console.error(err);
+                });
+            });
+        }
+    });
+
+    req.session.cart = {};
+
+    res.redirect("/");
+
 });
 
 router.get("/add-to-cart/:id", function(req, res, next) {
@@ -105,7 +192,25 @@ router.get("/shopping-cart", function(req, res, next) {
     }
 
     var cart = new Cart(req.session.cart);
-    res.render("shop/shopping-cart", { products: cart.generateArray(), totalPrice: cart.totalPrice });
+
+    var currentPoints = 0;
+    if(req.user)
+    {
+        RewardPoints.findOne({userId:JSON.stringify(req.user._id)}, function(err, obj){
+            if(obj)
+            {
+                currentPoints = obj.points;
+            }
+
+            res.render("shop/shopping-cart", { products: cart.generateArray(), totalPrice: cart.totalPrice,
+                                                rewardPoints: currentPoints });
+        });
+    }
+    else
+    {
+        res.render("shop/shopping-cart", { products: cart.generateArray(), totalPrice: cart.totalPrice,
+                                         rewardPoints: currentPoints });
+    }
 });
 
 router.get("/checkout", function(req, res, next) {
@@ -113,11 +218,13 @@ router.get("/checkout", function(req, res, next) {
         return res.redirect("/shopping-cart");
     }
     var cart = new Cart(req.session.cart);
-    res.render("shop/checkout", { total: cart.totalPrice });
+            
+    res.render("shop/checkout", { total: cart.totalPrice});
 });
 
 
 router.get("/profile", isLoggedInFunction, function(req, res, next) {
+    console.log(req.user);
     res.render("user/profile", { "user": req.user });
 });
 
@@ -176,43 +283,6 @@ router.post("/signin", passport.authenticate("local.signin", {
     failureRedirect: "/signin",
     failureFlash: true
 }));
-
-router.post("/checkout", function(req, res) {
-
-    var cart = new Cart(req.session.cart ? req.session.cart : {});
-    var cartData = [];
-    cartData = cart.generateArray();
-
-    var cartProdId = [];
-
-    for (i = 0; i < cartData.length; i++) {
-        // console.log(cartData[i].item._id);
-        cartProdId[i] = cartData[i].item._id;
-    }
-
-    if (!req.user) {
-        var receipt = new Receipt({
-            productId: cartProdId,
-            date: new Date()
-        });
-    } else {
-        var receipt = new Receipt({
-            userId: req.user._id,
-            productId: cartProdId,
-            date: new Date()
-        });
-    }
-
-    receipt.save(function(err, result) {
-        if (err) return console.error(err);
-    });
-
-    req.session.cart = {};
-
-    res.redirect("/");
-
-});
-
 
 module.exports = router;
 
