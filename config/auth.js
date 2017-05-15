@@ -16,7 +16,8 @@ module.exports = {
     'googleAuth': {
         'clientID': '105159512048-2da243kh38390f2hqr90lqt66ca0km0c.apps.googleusercontent.com',
         'clientSecret': 'UynirhftOWkTw04FP4dKd478',
-        'callbackURL': 'http://localhost:3000/auth/google/callback'
+        // 'callbackURL': 'http://localhost:3000/auth/google/callback'
+        'callbackURL': 'https://shopify-webapp.herokuapp.com/auth/google/callback'
     }
 
 };
