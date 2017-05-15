@@ -144,9 +144,35 @@ input[type=text]:focus {
 }
 
 .profile {
-    font-weight: bold;
+    font-weight: bolder;
     font-size: 16px;
     font-size: large;
+    color: black;
+    text-align: center;
+}
+
+a {
+    color: blue;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+}
+.c{
+    text-align: center;
+    background-color: brown;
 }
 
 .sell:link {
