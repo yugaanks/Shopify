@@ -49,6 +49,7 @@ module.exports = function Cart(oldCart) {
         }
         return arr;
     }
+    
     this.clearCart = function() {
         for (var id in this.items) {
             delete this.items[id];

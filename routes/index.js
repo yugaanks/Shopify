@@ -17,7 +17,7 @@ var helpers = require('handlebars-helpers')();
 router.get('/', function(req, res, next) {
     Product.find(function(err, docs) {
         var productChunks = [];
-        var chunkSize = 4;
+        var chunkSize = 3;
         for (var i = 0; i < docs.length; i += chunkSize) {
             productChunks.push(docs.slice(i, i + chunkSize))
         }
@@ -86,7 +86,7 @@ router.post("/checkout", function(req, res) {
     {
         console.log("yo");
         var receipt = new Receipt({
-            userId: req.user._id,
+            userId: JSON.stringify(req.user._id),
             productId: cartProdId,
             date: new Date()
         });
@@ -193,6 +193,7 @@ router.get("/shopping-cart", function(req, res, next) {
     }
 
     var cart = new Cart(req.session.cart);
+    console.log(cart.generateArray());
 
     var currentPoints = 0;
     if(req.user)
@@ -223,10 +224,21 @@ router.get("/checkout", function(req, res, next) {
     res.render("shop/checkout", { total: cart.totalPrice});
 });
 
-
 router.get("/profile", isLoggedInFunction, function(req, res, next) {
     console.log(req.user);
-    res.render("user/profile", { "user": req.user });
+
+    Receipt.findOne({userId:JSON.stringify(req.user._id)}, function(err, obj)
+    {
+        objPrd = Product.find({_id: {$in : obj.productId}}, function(err, objPrd) 
+        {
+            return objPrd;
+        }).then((userProducts) =>
+        {
+            console.log("2" + userProducts);
+            res.render("user/profile", { "user": req.user, products: userProducts });
+        })
+    });
+    // res.render("user/profile", { "user": req.user });
 });
 
 router.get("/logout", isLoggedInFunction, function(req, res, next) {

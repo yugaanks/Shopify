@@ -142,3 +142,9 @@ input[type=text]:focus {
     width: 20px;
     text-align: center;
 }
+
+.profile {
+    font-weight: bold;
+    font-size: 16px;
+    font-size: large;
+}
