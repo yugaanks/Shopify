@@ -8,11 +8,18 @@
       <script type="text/javascript" src="js/tota11y.min.js"></script>
       <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
         <script type="text/javascript" src="javascripts/checkout.js"></script>
+
+    <script>
+        function resetLocalStorage()
+        {
+            localStorage.setItem('clicked', 'false');
+        }
+    </script>        
 </head>
 <body>
 <div class="row">
     <div class="col-sm-6 col-md-4 col-md-offset-4 col-sm-offset-3">
-        <h2>Checkout - Your Total:${{total}}</h2>
+        <h2>Your Total: ${{total}}</h2>
         <div class="coupon">
         </div>
         <div id="charge-error" class="alert alert-danger hidden">
@@ -85,7 +92,7 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-success">Buy Now</button>
+            <button type="submit" class="btn btn-success" onlick="resetLocalStorage()">Buy Now</button>
         </form>
 
         <hr>

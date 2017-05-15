@@ -7,19 +7,35 @@
       <link rel='stylesheet' href='/stylesheets/style.css' />
       <script type="text/javascript" src="js/tota11y.min.js"></script>
 
-      <script>
-        function changeTotalAmount() {
-            
-            var total = {{totalPrice}};
-            var rewards = {{rewardPoints}}
+    <script>
+        function setColor() {
 
-            total = total-rewards;
-            document.getElementById("totalAmt").innerHTML = "Total Amount: $" + total;
+            var property = document.getElementById("rewards");
+            if (localStorage.getItem('clicked') == 'true') {
+                    property.style.backgroundColor = "red"     
+                    property.innerHTML = "Remove applied reward points";
+            }
+            else {
+                property.style.backgroundColor = "green"
+                property.innerHTML = "You have {{rewardPoints}} reward points. Apply?";
+            }
         }
-</script>
+
+        function runUrl(link) {
+            var property = document.getElementById("rewards");
+            if ( localStorage.getItem('clicked') == 'true') {
+                localStorage.setItem('clicked', 'false');
+                window.location = "/removeRewardPoints/{{rewardPoints}}";      
+            }
+            else {
+                localStorage.setItem('clicked', 'true');
+                window.location = "/applyRewardPoints/{{rewardPoints}}";
+            }
+        }
+    </script>
 
 </head>
-<body class="main" onload="Init ()">
+<body class="main" onload="setColor()"> 
 {{# if products}}
     <div class="row">
         <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
@@ -32,14 +48,7 @@
                             <strong>{{this.item.title}}</strong>
                             <img src={{this.item.imagePath}} alt="goodsImage" class="img-responsive"height="100px"width="100px">  
                         </div>
-                        {{!--<button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown">Action<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                                <li><a href="/reduce/{{this.item._id}}">Reduce by 1</a></li>
-                                <li><a href="/remove/{{this.item._id}}">Reduce All</a></li>
-                                <li><a href="/add/{{this.item._id}}"> Add by 1</a></li>
-                        </ul>--}}
                         <span class="price">${{this.price}}</span>
-                        {{!--&nbsp<button class="add" type="button" name="add" onclick="">+</button>--}}
                         &nbsp<a href="/add/{{this.item._id}}" class="cart-button">+</a>
                         &nbsp<a href="/reduce/{{this.item._id}}" class="cart-button">-</a>
                         &nbsp<a href="/remove/{{this.item._id}}" class="cart-button">x</a>
@@ -47,26 +56,12 @@
                     </ul>
                 {{/each}}
                 
-                {{!--{{# if rewardPoints}}
+                {{# if rewardPoints}}
                     <div class="row"align="center">
-                            <button onclick="changeTotalAmount()">You have {{rewardPoints}} reward points available! <br> Do you want to use it?</button>
-
-                            <div class="[ reward-pts ]">
-                                <input type="checkbox" name="fancy-checkbox-success" id="fancy-checkbox-success" autocomplete="off" 
-                                    onchange="changeFinalAmount(this)" />
-                                <div class="[ btn-group ]">
-                                    <label for="fancy-checkbox-success" class="[ btn btn-success ]">
-                                        <span class="[ glyphicon glyphicon-ok ]"></span>
-                                        <span> </span>
-                                    </label>
-                                    <label for="fancy-checkbox-success" class="[ btn btn-default active ]">
-                                        You have {{rewardPoints}} available! Do you want to use it?
-                                    </label>
-                                </div>
-                            </div>
+                        <a id="rewards" type="button" class="btn btn-success" onclick="runUrl()"></a>    
                     </div>
                     <br>
-                {{/if}}--}}
+                {{/if}}
         </div>
     </div>
 

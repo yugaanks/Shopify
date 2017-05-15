@@ -42,6 +42,14 @@ module.exports = function Cart(oldCart) {
         delete this.items[id];
     }
 
+    this.applyRewardPoints = function(points) {
+        this.totalPrice -= points;
+    }
+
+    this.removeRewardPoints = function(points) {
+        this.totalPrice = parseInt(this.totalPrice) + parseInt(points);
+    }
+
     this.generateArray = function() {
         var arr = [];
         for (var id in this.items) {

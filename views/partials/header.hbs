@@ -6,6 +6,12 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
       <link rel='stylesheet' href='/stylesheets/style.css' />
       <script type="text/javascript" src="js/tota11y.min.js"></script>
+      <script>
+      function resetLocalStorage()
+        {
+            localStorage.setItem('clicked', 'false');
+        }
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-inverse">
@@ -56,7 +62,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="/profile">Profile</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="/logout">Logout</a></li>
+                        <li><a href="/logout" onclick="resetLocalStorage()">Logout</a></li>
                     </ul>
                     {{else}}
                     <ul class="dropdown-menu">

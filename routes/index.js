@@ -12,6 +12,7 @@ var Receipt = require("../models/receipt");
 var RewardPoints = require("../models/rewardPoints");
 var mongoose = require("mongoose");
 var helpers = require('handlebars-helpers')();
+var rewardTaken = false;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -29,6 +30,9 @@ router.get("/about-us", function(req, res, next) {
     res.render("about-us");
 });
 
+// router.get("/order-confirmation", function(req, res, next) {
+//     res.render("order-confirmation");
+// });
 
 router.post("/search", function(req, res, next) {
     Product.find({ title: req.body.search_content }, function(err, docs) {
@@ -98,41 +102,35 @@ router.post("/checkout", function(req, res) {
 
         if(req.user)
         {
-            currentPoints = 0;
+            RewardPoints.findOne({userId:JSON.stringify(req.user._id)}, function(err, rewards){
+                if (err) 
+                    { return next(err); }
 
-            RewardPoints.findOne({userId:JSON.stringify(req.user._id)}, function(err, obj){
-                
-                if(obj)
-                {
-                    currentPoints = obj.points;
-                    console.log(currentPoints + obj.userId + " " + obj._id);
+                if(rewards)
+                {  
+                    console.log(rewardTaken + " " + rewards.points + cart.totalPrice/10)
 
-                    try {
-                         RewardPoints.deleteOne(
-                            { "_id" : obj._id }
-                            // { w : "majority", wtimeout : 100 }
-                        );
-                    } catch (e) 
-                    {
-                        console.log(e);
-                    }
+                    if(rewardTaken == false)
+                        rewards.points += cart.totalPrice/10;
+                    else
+                        rewards.points = cart.totalPrice/10;
 
-                    // RewardPoints.updateOne(
-                    //     {_id: obj._id},
-                    //     // {'userId': `'` + obj.userId + `'`},
-                    //     {$set:{'points': updPoints}}
-                    // );
+                    rewards.save(function(err) {
+                    if (err) { return next(err); }
+                    });
                 }
+                else
+                {
+                    var points = new RewardPoints({
+                        userId: JSON.stringify(req.user._id),
+                        points: cart.totalPrice/10
+                    });
 
-                var points = new RewardPoints({
-                    userId: JSON.stringify(req.user._id),
-                    points: currentPoints + cart.totalPrice/10
-                });
-
-                points.save(function(err, result) {
+                    points.save(function(err, result) {
                     if (err) 
                         return console.error(err);
-                });
+                });   
+                }
             });
         }
     });
@@ -186,6 +184,28 @@ router.get("/remove/:id", function(req, res, next) {
     res.redirect("/shopping-cart");
 });
 
+router.get("/applyRewardPoints/:points", function(req, res, next) {
+    var points = req.params.points;
+    var cart = new Cart(req.session.cart ? req.session.cart : {});
+
+    cart.applyRewardPoints(points);
+    req.session.cart = cart;
+
+    rewardTaken = true;
+    res.redirect("/shopping-cart");
+});
+
+router.get("/removeRewardPoints/:points", function(req, res, next) {
+    var points = req.params.points;
+    var cart = new Cart(req.session.cart ? req.session.cart : {});
+
+    cart.removeRewardPoints(points);
+    req.session.cart = cart;
+
+    rewardTaken = false;
+    res.redirect("/shopping-cart");
+});
+
 
 router.get("/shopping-cart", function(req, res, next) {
     if (!req.session.cart) {
@@ -193,7 +213,6 @@ router.get("/shopping-cart", function(req, res, next) {
     }
 
     var cart = new Cart(req.session.cart);
-    console.log(cart.generateArray());
 
     var currentPoints = 0;
     if(req.user)
@@ -229,19 +248,26 @@ router.get("/profile", isLoggedInFunction, function(req, res, next) {
 
     Receipt.findOne({userId:JSON.stringify(req.user._id)}, function(err, obj)
     {
-        objPrd = Product.find({_id: {$in : obj.productId}}, function(err, objPrd) 
+        if(obj)
         {
-            return objPrd;
-        }).then((userProducts) =>
+            Product.find({_id: {$in : obj.productId}}, function(err, objPrd) 
+            {
+                return objPrd;
+            }).then((userProducts) =>
+            {
+                res.render("user/profile", { "user": req.user, products: userProducts });
+            })
+        }
+        else
         {
-            console.log("2" + userProducts);
-            res.render("user/profile", { "user": req.user, products: userProducts });
-        })
+            res.render("user/profile", { "user": req.user, products: null });
+        }
     });
     // res.render("user/profile", { "user": req.user });
 });
 
 router.get("/logout", isLoggedInFunction, function(req, res, next) {
+    req.session.destroy();
     req.logout();
     res.redirect("/");
 });
