@@ -9,12 +9,11 @@
 
       <script>
         function changeTotalAmount() {
-
-            var total = {{totalPrice}};
-            var rewards = {{rewardPoints}};
-
-            total = total - rewards;
             
+            var total = {{totalPrice}};
+            var rewards = {{rewardPoints}}
+
+            total = total-rewards;
             document.getElementById("totalAmt").innerHTML = "Total Amount: $" + total;
         }
 </script>

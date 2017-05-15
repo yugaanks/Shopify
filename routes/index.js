@@ -11,6 +11,7 @@ var Product = require("../models/product");
 var Receipt = require("../models/receipt");
 var RewardPoints = require("../models/rewardPoints");
 var mongoose = require("mongoose");
+var helpers = require('handlebars-helpers')();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
