@@ -47,11 +47,11 @@
                     </ul>
                 {{/each}}
                 
-                {{# if rewardPoints}}
+                {{!--{{# if rewardPoints}}
                     <div class="row"align="center">
                             <button onclick="changeTotalAmount()">You have {{rewardPoints}} reward points available! <br> Do you want to use it?</button>
 
-                            {{!--<div class="[ reward-pts ]">
+                            <div class="[ reward-pts ]">
                                 <input type="checkbox" name="fancy-checkbox-success" id="fancy-checkbox-success" autocomplete="off" 
                                     onchange="changeFinalAmount(this)" />
                                 <div class="[ btn-group ]">
@@ -63,10 +63,10 @@
                                         You have {{rewardPoints}} available! Do you want to use it?
                                     </label>
                                 </div>
-                            </div>--}}
+                            </div>
                     </div>
                     <br>
-                {{/if}}
+                {{/if}}--}}
         </div>
     </div>
 
@@ -78,19 +78,20 @@
 
     <hr/>
     <br/>
-    <div class="row">
+    <div class="row" align="center">
         <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
             
             <a href="/checkout" type="button" class="btn btn-success">Checkout</a>
-            <a href="/" type="button" class="btn btn-success">Continue Shopping</a>
+            &nbsp<a href="/" type="button" class="btn btn-success">Continue Shopping</a>
 
             
         </div>
     </div>
 {{else}}
-    <div class="row">
+    <div class="row" align="center">
         <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
             <h2>No Items in the Cart</h2>
+            <a href="/" class="sell">Order Now!</a>
         </div>
     </div>
 {{/if}}

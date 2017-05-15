@@ -148,3 +148,10 @@ input[type=text]:focus {
     font-size: 16px;
     font-size: large;
 }
+
+.sell:link {
+    color:#0000ff;
+    font-size:30px;
+    }
+
+.sell:hover {font-size:300%;}
