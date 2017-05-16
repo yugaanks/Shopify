@@ -30,9 +30,9 @@ router.get("/about-us", function(req, res, next) {
     res.render("about-us");
 });
 
-// router.get("/order-confirmation", function(req, res, next) {
-//     res.render("order-confirmation");
-// });
+router.get("/orderconfirmation", function(req, res, next) {
+    res.render("shop/orderconfirmation");
+});
 
 router.post("/search", function(req, res, next) {
     Product.find({ title: req.body.search_content }, function(err, docs) {
@@ -137,7 +137,8 @@ router.post("/checkout", function(req, res) {
 
     req.session.cart = {};
 
-    res.redirect("/");
+    // res.redirect("/");
+    res.redirect("/orderconfirmation");
 
 });
 
